@@ -217,6 +217,7 @@ function WTFocus() {
       }
       let tagDetails = "<" + tagName + ">";
       let superfluousRole = false;
+      let identicalAriaLabel = false;
       let betterAsNativeHTMLelement = false;
       if (tagRole) {
         tagDetails = "<" + tagName + ' role="' + tagRole + '">';
@@ -379,10 +380,8 @@ function WTFocus() {
           if (outputToPage) {
             WTFocusPanel.classList.add("error");
           }
-          // if (!isDupeAccName) {
             log("Accessible Name: No accessible name!", "", style_bad_formatting);
             log("Accessible Name Source: N/A", "", style_bad_formatting);
-          // }
         }
         if (isDupeAccName && (accName !== "")) {
           if (outputToPage) {
@@ -498,8 +497,13 @@ function WTFocus() {
       }
       resetGoodBadState();
       if (accNameSource === "aria-label") {
-        isGood = true;
-        log("@aria-label value: ", ariaLabel, style_ok_formatting, true);
+        if (ariaLabel===textContent) {
+          isBad = true;
+          log("`aria-label` content is same as inner text content", "", style_bad_formatting);
+         } else {
+          isGood = true;
+          log("@aria-label value: ", ariaLabel, style_ok_formatting, true);
+         }
       } else {
         if (ariaLabel === "N/A") {
           log("@aria-label value: ", ariaLabel, style_unimportant_formatting);

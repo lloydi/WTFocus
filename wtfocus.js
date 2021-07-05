@@ -513,9 +513,14 @@ function WTFocus() {
       }
       resetGoodBadState();
       if (accNameSource === "aria-labelledby") {
-        isGood = true;
-        log("@aria-labelledby value: ", ariaLabelledBy, style_ok_formatting, true);
-        log("@aria-labelledby sources: ", accNameFromAriaLabelledBySrc, style_ok_formatting);
+        if (accNameFromAriaLabelledBySrc===textContent) {
+          isBad = true;
+          log("`aria-labelledby` source content is same as inner text content", "", style_bad_formatting);
+         } else {
+           isGood = true;
+           log("@aria-labelledby value: ", ariaLabelledBy, style_ok_formatting, true);
+           log("@aria-labelledby sources: ", accNameFromAriaLabelledBySrc, style_ok_formatting);
+         }
       } else {
         log("@aria-labelledby value: ", ariaLabelledBy, style_unimportant_formatting);
         log("@aria-labelledby sources: ", "N/A", style_unimportant_formatting);

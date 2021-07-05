@@ -56,9 +56,9 @@ function WTFocus() {
         strPageOutput += warning;
       }
       strPageOutput += text + "</span>&nbsp;" + el + "</li>\n";
-    // } else {
-    //   el = el.replace("&lt;", "<").replace("&gt;", ">");
-    //   console.log("%c" + text + '"' + el + '"', style);
+      // } else {
+      //   el = el.replace("&lt;", "<").replace("&gt;", ">");
+      //   console.log("%c" + text + '"' + el + '"', style);
     }
     //also output to console
     el = el.replace("&lt;", "<").replace("&gt;", ">");
@@ -112,7 +112,7 @@ function WTFocus() {
     WTFocusPanel.appendChild(consoleClose);
   }
   function hidePanel() {
-    document.querySelector("#WTFocusPanel").setAttribute("hidden","hidden");
+    document.querySelector("#WTFocusPanel").setAttribute("hidden", "hidden");
   }
   function removePanel() {
     document.querySelector("#WTFocusPanel").remove();
@@ -178,7 +178,6 @@ function WTFocus() {
     Array.from(styleEls).forEach(function (styleEl) {
       styleEl.remove();
     });
-
 
     focusable.addEventListener("focus", () => {
       removeDupeIndicators();
@@ -371,19 +370,19 @@ function WTFocus() {
       console.log(focusable);
       // }
 
-      isDupeAccName = (focusable.getAttribute("data-dupe")==="true");
-      dupeAccNameIsNoAccName = (isDupeAccName && (accName === ""));
+      isDupeAccName = focusable.getAttribute("data-dupe") === "true";
+      dupeAccNameIsNoAccName = isDupeAccName && accName === "";
 
-      if ((accName === "")||isDupeAccName) {
+      if (accName === "" || isDupeAccName) {
         if (accName === "") {
           isBad = true;
           if (outputToPage) {
             WTFocusPanel.classList.add("error");
           }
-            log("Accessible Name: No accessible name!", "", style_bad_formatting);
-            log("Accessible Name Source: N/A", "", style_bad_formatting);
+          log("Accessible Name: No accessible name!", "", style_bad_formatting);
+          log("Accessible Name Source: N/A", "", style_bad_formatting);
         }
-        if (isDupeAccName && (accName !== "")) {
+        if (isDupeAccName && accName !== "") {
           if (outputToPage) {
             WTFocusPanel.classList.add("warning");
           }
@@ -402,7 +401,6 @@ function WTFocus() {
             console.log(anotherDupe);
           });
           log("Accessible Name Source: ", accNameSource, style_bad_formatting);
-
         }
       } else {
         if (outputToPage) {
@@ -413,7 +411,7 @@ function WTFocus() {
         log("Accessible Name Source: ", accNameSource, style_good_formatting);
       }
 
-      isBad=false;
+      isBad = false;
       log("HTML Element: ", tagDetails, style_good_formatting);
       if (!outputToPage) {
         console.log("%cACCESSIBLE NAME COMES FROM: ", style_title_formatting);
@@ -497,13 +495,13 @@ function WTFocus() {
       }
       resetGoodBadState();
       if (accNameSource === "aria-label") {
-        if (ariaLabel===textContent) {
+        if (ariaLabel === textContent) {
           isBad = true;
           log("`aria-label` content is same as inner text content", "", style_bad_formatting);
-         } else {
+        } else {
           isGood = true;
           log("@aria-label value: ", ariaLabel, style_ok_formatting, true);
-         }
+        }
       } else {
         if (ariaLabel === "N/A") {
           log("@aria-label value: ", ariaLabel, style_unimportant_formatting);
@@ -513,14 +511,14 @@ function WTFocus() {
       }
       resetGoodBadState();
       if (accNameSource === "aria-labelledby") {
-        if (accNameFromAriaLabelledBySrc===textContent) {
+        if (accNameFromAriaLabelledBySrc === textContent) {
           isBad = true;
           log("`aria-labelledby` source content is same as inner text content", "", style_bad_formatting);
-         } else {
-           isGood = true;
-           log("@aria-labelledby value: ", ariaLabelledBy, style_ok_formatting, true);
-           log("@aria-labelledby sources: ", accNameFromAriaLabelledBySrc, style_ok_formatting);
-         }
+        } else {
+          isGood = true;
+          log("@aria-labelledby value: ", ariaLabelledBy, style_ok_formatting, true);
+          log("@aria-labelledby sources: ", accNameFromAriaLabelledBySrc, style_ok_formatting);
+        }
       } else {
         log("@aria-labelledby value: ", ariaLabelledBy, style_unimportant_formatting);
         log("@aria-labelledby sources: ", "N/A", style_unimportant_formatting);
@@ -537,35 +535,34 @@ function WTFocus() {
       });
 
       //add accNAme as attribute for easier lookup/comparison
-      focusable.setAttribute("data-accname",accName);
-
+      focusable.setAttribute("data-accname", accName);
 
       if (!checkedForDupes) {
-        addAccNameIfNotAlreadyExists(accName,focusable);
+        addAccNameIfNotAlreadyExists(accName, focusable);
       }
     });
   });
 
-  let checkedForDupes=false;
+  let checkedForDupes = false;
   function removeDupeIndicators() {
     Array.from(focusables).forEach(function (focusable) {
       focusable.classList.remove("dupeAccName");
     });
   }
 
-  function mimicFocus(){
+  function mimicFocus() {
     currentActiveEl = document.activeElement;
     Array.from(focusables).forEach(function (focusable) {
-      if (document.activeElement===focusable) {
+      if (document.activeElement === focusable) {
         focusable.blur();
       }
       focusable.focus();
     });
-    checkedForDupes=true;
-    if (currentActiveEl.tagName==="BODY") {
+    checkedForDupes = true;
+    if (currentActiveEl.tagName === "BODY") {
       //focus on body
       const bodyEl = document.querySelector("body");
-      bodyEl.setAttribute("tabindex","-1");
+      bodyEl.setAttribute("tabindex", "-1");
       bodyEl.focus();
       hidePanel();
     } else {
@@ -575,17 +572,17 @@ function WTFocus() {
   }
   mimicFocus();
 
-  function addAccNameIfNotAlreadyExists(thisAccName,el) {
-    let dupeFound=false;
+  function addAccNameIfNotAlreadyExists(thisAccName, el) {
+    let dupeFound = false;
     Array.from(accNamesFound).forEach(function (accName) {
-      if (accName===thisAccName) {
-        dupeFound=true;
+      if (accName === thisAccName) {
+        dupeFound = true;
       }
     });
     if (dupeFound) {
-      el.setAttribute("data-dupe","true");
+      el.setAttribute("data-dupe", "true");
       const previousElWithSameAccName = document.querySelector("[data-accname='" + thisAccName + "']");
-      previousElWithSameAccName.setAttribute("data-dupe","true");
+      previousElWithSameAccName.setAttribute("data-dupe", "true");
     } else {
       accNamesFound.push(thisAccName);
     }

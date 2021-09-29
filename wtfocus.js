@@ -4,7 +4,7 @@
 // add option to output to page or console (currently seet to both)?
 
 function WTFocus() {
-  const focusables = document.querySelectorAll('a[href],button,select,input:not([type="hidden"]),textarea,summary,details,area,[tabindex]:not(#WTFocusPanel):not([tabindex="-1"]),[contenteditable]:not([contenteditable="false"])');
+  const focusables = document.querySelectorAll('a[href],button,select,input:not([type="hidden"]),textarea,summary,area,[tabindex]:not(#WTFocusPanel):not([tabindex^="-1"]),[contenteditable]:not([contenteditable="false"])');
   //styles
   const style_title_formatting = "background:#193c10;color:white;";
   const style_overridden_formatting = "background:#fff;color:darkgreen;font-weight:bold;text-decoration:line-through";

@@ -154,6 +154,7 @@ function WTFocus() {
     // console.log("panelBottomCoord = " + panelBottomCoord);
     // console.log("viewportHeight = " + viewportHeight);
     if (curtainsMode) {
+      WTFocusPanel.style.position = "fixed";
       WTFocusPanel.style.top = "50%";
       WTFocusPanel.style.left = "50%";
       WTFocusPanel.style.transform = "translate(-50%,-50%)";

@@ -233,6 +233,43 @@ function WTFocus() {
     });
 
     focusable.addEventListener("focus", () => {
+      let elementRole = focusable.getAttribute("role");
+      let focussedTagName = focusable.tagName.toLowerCase();
+      console.clear();
+      if (elementRole) {
+        console.log("🛼🛼🛼 role attribute = ", elementRole, "🛼🛼🛼");
+      } else {
+        if (
+          (focussedTagName=="button")
+          ||
+          (focussedTagName=="img")
+          ) {
+          elementRole = focussedTagName;
+        }
+        if (focussedTagName=="a") {
+          elementRole = "link";
+        }
+        if (focussedTagName=="select") {
+          elementRole = "listbox";
+        }
+        if (focussedTagName=="textarea") {
+          elementRole = "textbox";
+        }
+        if (focussedTagName=="input") {
+          let type = focusable.getAttribute("type").toLowerCase();
+          if (type==="text") {
+            elementRole = "textbox";
+          }
+          if (
+            (type==="checkbox")
+            ||
+            (type==="radio")
+            ) {
+            elementRole = type;
+          }
+        }
+        console.log("🛼🛼🛼 role derived from TAGNAME/[type] = ", elementRole, "🛼🛼🛼");
+      }
       currentFocusedEl = focusable;
       removeDupeIndicators();
       let containsImages = false;

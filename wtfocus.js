@@ -239,12 +239,47 @@ function WTFocus() {
       if (elementRole) {
         console.log("🛼🛼🛼 role attribute = ", elementRole, "🛼🛼🛼");
       } else {
-        if (
-          (focussedTagName=="button")
-          ||
-          (focussedTagName=="img")
-          ) {
+        if ((focussedTagName=="article")||(focussedTagName=="button")||(focussedTagName=="dialog")||(focussedTagName=="figure")||(focussedTagName=="img")||(focussedTagName=="main")||(focussedTagName=="math")) {
           elementRole = focussedTagName;
+        }
+        if (focussedTagName=="summary") {
+          elementRole = "button";
+        }
+        if (focussedTagName=="aside") {
+          elementRole = "complementary";
+        }
+        if (focussedTagName=="dd") {
+          elementRole = "definition";
+        }
+        if (focussedTagName=="html") {
+          elementRole = "document";
+        }
+        if ((focussedTagName=="details")||(focussedTagName=="fieldset")||(focussedTagName=="optgroup")) {
+          elementRole = "group";
+        }
+        if ((focussedTagName=="menu")||(focussedTagName=="ol")||(focussedTagName=="ul")) {
+          elementRole = "list";
+        }
+        if (focussedTagName=="datalist") {
+          elementRole = "listbox";
+        }
+        if (focussedTagName=="li") {
+          elementRole = "listitem";
+        }
+        if (focussedTagName=="nav") {
+          elementRole = "navigation";
+        }
+        if (focussedTagName=="progress") {
+          elementRole = "progressbar";
+        }
+        if (focussedTagName=="hr") {
+          elementRole = "separator";
+        }
+        if (focussedTagName=="output") {
+          elementRole = "status";
+        }
+        if ((focussedTagName=="dfn")||(focussedTagName=="dt")) {
+          elementRole = "term";
         }
         if (focussedTagName=="a") {
           elementRole = "link";
@@ -260,12 +295,17 @@ function WTFocus() {
           if (type==="text") {
             elementRole = "textbox";
           }
-          if (
-            (type==="checkbox")
-            ||
-            (type==="radio")
-            ) {
+          if (type==="range") {
+            elementRole = "slider";
+          }
+          if (type==="number") {
+            elementRole = "spinbutton";
+          }
+          if ((type==="checkbox")||(type==="radio")) {
             elementRole = type;
+          }
+          if ((type==="button")||(type==="image")||(type==="reset")||(type==="submit")) {
+            elementRole = "button";
           }
         }
         console.log("🛼🛼🛼 role derived from TAGNAME/[type] = ", elementRole, "🛼🛼🛼");

@@ -4,6 +4,7 @@
 // add option to output to page or console (currently seet to both)?
 
 function WTFocus() {
+  let currentFocusedEl = document.activeElement;
   const focusables = document.querySelectorAll('a[href],button,select,input:not([type="hidden"]),textarea,summary,area,[tabindex]:not(#WTFocusPanel):not([tabindex^="-1"]),[contenteditable]:not([contenteditable="false"])');
   //styles
   const style_title_formatting = "background:#193c10;color:white;";
@@ -20,7 +21,7 @@ function WTFocus() {
   const WTFfocusOutlineWidth = 7;
   const indicator = '<span aria-hidden="true">👉🏽</span><span class="visually-hidden">Accessible name provided by</span> ';
   const warning = '<span aria-hidden="true">🚨</span> <span class="visually-hidden">Warning</span>';
-  let accNameLabel = "Accessible name: "
+  let accNameLabel = "Accessible name: ";
 
   let outputToPage = false;
   let strPageOutput = "";
@@ -34,8 +35,8 @@ function WTFocus() {
   let curtainsMode = false;
 
   // if (confirm("Do you want to set a black curtain over the whole page? (Only the element in focus has its accessible name revealed)")) {
-    curtainsMode = true;
-    accNameLabel = "";
+    // curtainsMode = true;
+    // accNameLabel = "";
   // }
 
   function findAncestor(el, sel) {
@@ -77,7 +78,7 @@ function WTFocus() {
     const focusStyles = document.createElement("style");
     focusStyles.setAttribute("type", "text/css");
     focusStyles.setAttribute("id", "panelStyles");
-    focusStyles.textContent = ".dupeAccName {outline:4px dashed #CC3300!important;outline-offset:" + WTFfocusOutlineWidth + "px!important;overflow:visible;} .WTFocusTempFocusStyle:focus {outline:" + WTFfocusOutlineWidth + "px solid black!important;outline-offset:" + WTFfocusOutlineWidth + "px!important;overflow:visible;/*background:yellow!important;color:black!important;*/} .WTFocusTempFocusStyle.dupeAccName:focus {outline-color:#CC3300!important;} .visually-hidden {clip-path: inset(100%);clip: rect(1px, 1px, 1px, 1px);height: 1px;overflow: hidden;position: absolute;white-space: nowrap;width: 1px;}#WTFocusCurtain {background:rgba(0,0,0,0.95);position: fixed;top: 0;bottom: 0;left: 0;right: 0;}";
+    focusStyles.textContent = ".dupeAccName {outline:4px dashed #CC3300!important;outline-offset:" + WTFfocusOutlineWidth + "px!important;overflow:visible;} .WTFocusTempFocusStyle:focus {outline:" + WTFfocusOutlineWidth + "px solid black!important;outline-offset:" + WTFfocusOutlineWidth + "px!important;overflow:visible;/*background:yellow!important;color:black!important;*/} .WTFocusTempFocusStyle.dupeAccName:focus {outline-color:#CC3300!important;} .visually-hidden {clip-path: inset(100%);clip: rect(1px, 1px, 1px, 1px);height: 1px;overflow: hidden;position: absolute;white-space: nowrap;width: 1px;}#WTFocusCurtain {background:black;position: fixed;top: 0;bottom: 0;left: 0;right: 0;z-index:49999}";
     document.querySelector("body").appendChild(focusStyles);
   }
   function addPanelStyles(WTFpanelWidth) {
@@ -85,7 +86,7 @@ function WTFocus() {
     consoleStyle.setAttribute("type", "text/css");
     consoleStyle.setAttribute("id", "focusStyles");
     consoleStyle.textContent =
-      "#WTFocusPanel.error {background:darkred;} #WTFocusPanel.warning {background:#CC3300;} #WTFocusPanel.curtainsMode.error {background:black;} #WTFocusPanel.curtainsMode.warning {background:black;} #WTFocusPanel[hidden] {display:none;} #WTFocusPanel * {text-align:left} #WTFocusPanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: absolute;z-index:10000;background: black;padding: 20px 20px;width:" +
+      "#WTFocusPanel.error {background:darkred;} #WTFocusPanel.warning {background:#CC3300;} #WTFocusPanel.curtainsMode.error {background:black;} #WTFocusPanel.curtainsMode {z-index:50000;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);} #WTFocusPanel.curtainsMode.warning {background:black;} #WTFocusPanel[hidden] {display:none;} #WTFocusPanel * {text-align:left} #WTFocusPanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: absolute;z-index:10000;background: black;padding: 20px 20px;width:" +
       WTFpanelWidth +
       "px;font-size:16px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff;color:#333;padding:2px} #WTFocusPanel li.outline {outline:4px solid rgb(58, 190, 58);outline-offset:-4px;padding:8px} #WTFocusPanel.error:before {background:darkred} #WTFocusPanel.warning:before {background:#CC3300} #WTFocusPanel:before {content:'';display:block;height:20px;width:20px;transform:rotate(45deg);position:absolute;background:#000;left:-12px;top:3px;border:2px solid #fff;border-right:none;border-top:none;} #WTFocusPanel.toBottom:before {top:auto;bottom:3px} #WTFocusPanel.toLeft:before {left:auto;right:-12px;border:2px solid #fff;border-left:none;border-bottom:none;} #WTFocusPanel.curtainsMode {outline:10px solid orange;} #WTFocusPanel.curtainsMode:before {display:none;} #WTFocusPanel.curtainsMode li {display:none;} #WTFocusPanel.curtainsMode li:first-child {display:block;} #WTFocusPanel.curtainsMode li span {display:none!important;} ";
     document.querySelector("head").appendChild(consoleStyle);
@@ -98,9 +99,8 @@ function WTFocus() {
     outputToPage = true;
     strPageOutput = "";
     addPanelStyles(WTFpanelWidth);
-    if (curtainsMode) addCurtainToPage();
+    addCurtainToPage();
     addPanelToPage();
-    // }
   }
   function addCurtainToPage() {
     WTFocusCurtain.setAttribute("id", "WTFocusCurtain");
@@ -130,7 +130,7 @@ function WTFocus() {
     toggleModeButton.textContent = "Change Mode (M)";
     toggleModeButton.setAttribute("type", "button");
     toggleModeButton.setAttribute("class", "panel-btn");
-    toggleModeButton.addEventListener("click", () => {
+    toggleModeButton.addEventListener("click", (e) => {
       toggleMode();
     });
     WTFocusPanel.appendChild(consoleCloseButton);
@@ -140,7 +140,20 @@ function WTFocus() {
     document.querySelector("#WTFocusPanel").setAttribute("hidden", "hidden");
   }
   function toggleMode() {
-    alert("toggle");
+    if (curtainsMode) {
+      document.querySelector("#WTFocusPanel").classList.remove("curtainsMode");
+      document.querySelector("#WTFocusPanel").removeAttribute("style");
+      document.querySelector("#WTFocusCurtain").setAttribute("hidden","hidden");
+      curtainsMode=false;
+      accNameLabel = "Accessible name: ";
+    } else {
+      document.querySelector("#WTFocusPanel").classList.add("curtainsMode");
+      document.querySelector("#WTFocusCurtain").removeAttribute("hidden");
+      curtainsMode=true;
+      accNameLabel = "";
+    }
+    positionPanelOnPage(currentFocusedEl);
+    currentFocusedEl.focus();
   }
   function removePanel() {
     document.querySelector("#WTFocusCurtain").remove();
@@ -171,11 +184,9 @@ function WTFocus() {
     // console.log("panelBottomCoord = " + panelBottomCoord);
     // console.log("viewportHeight = " + viewportHeight);
     if (curtainsMode) {
-      WTFocusPanel.style.position = "fixed";
-      WTFocusPanel.style.top = "50%";
-      WTFocusPanel.style.left = "50%";
-      WTFocusPanel.style.transform = "translate(-50%,-50%)";
-    } else {
+      document.querySelector("#WTFocusPanel").removeAttribute("style");
+    }
+    else {
       if (panelRightCoord > viewportWidth) {
         if (panelBottomCoord > viewportHeight) {
           WTFocusPanel.style.top = "auto";
@@ -203,6 +214,7 @@ function WTFocus() {
         WTFocusPanel.style.right = "auto";
         WTFocusPanel.classList.remove("toLeft");
       }
+
     }
   }
 
@@ -221,6 +233,7 @@ function WTFocus() {
     });
 
     focusable.addEventListener("focus", () => {
+      currentFocusedEl = focusable;
       removeDupeIndicators();
       let containsImages = false;
       isGood = false;
@@ -568,7 +581,6 @@ function WTFocus() {
       if (outputToPage) {
         document.querySelector("#WTFocusPanel").innerHTML = '<ul role="list">' + strPageOutput + "</ul>";
         document.querySelector("#WTFocusPanel").removeAttribute("hidden");
-        document.querySelector("#WTFocusCurtain").removeAttribute("hidden");
         addButtons();
       }
       const allTempNodes = document.querySelectorAll("[data-temp-node]");
@@ -613,6 +625,7 @@ function WTFocus() {
     console.clear();
   }
   mimicFocus();
+    console.log("had focus = ",currentFocusedEl);
 
   function addAccNameIfNotAlreadyExists(thisAccName, el) {
     let dupeFound = false;

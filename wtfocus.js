@@ -237,7 +237,7 @@ function WTFocus() {
       let focussedTagName = focusable.tagName.toLowerCase();
       console.clear();
       if (elementRole) {
-        console.log("🛼🛼🛼 role attribute = ", elementRole, "🛼🛼🛼");
+        // console.log("🛼🛼🛼 role attribute = ", elementRole, "🛼🛼🛼");
       } else {
         if ((focussedTagName=="article")||(focussedTagName=="button")||(focussedTagName=="dialog")||(focussedTagName=="figure")||(focussedTagName=="img")||(focussedTagName=="main")||(focussedTagName=="math")) {
           elementRole = focussedTagName;
@@ -308,7 +308,7 @@ function WTFocus() {
             elementRole = "button";
           }
         }
-        console.log("🛼🛼🛼 role derived from TAGNAME/[type] = ", elementRole, "🛼🛼🛼");
+        // console.log("🛼🛼🛼 role derived from TAGNAME/[type] = ", elementRole, "🛼🛼🛼");
       }
       currentFocusedEl = focusable;
       removeDupeIndicators();
@@ -544,6 +544,7 @@ function WTFocus() {
 
       isBad = false;
       log("HTML Element: ", tagDetails, style_good_formatting);
+      log("Role: ", elementRole, style_good_formatting);
       if (!outputToPage) {
         console.log("%cACCESSIBLE NAME COMES FROM: ", style_title_formatting);
       }

@@ -50,13 +50,20 @@ function WTFocus() {
     isGood = false;
     isBad = false;
   }
-  function log(text, el, style, isCurrent) {
+  function log(text, el, style, isCurrent, showInCurtainsMode) {
     if (outputToPage) {
       el = el.split("<").join("&lt;").split(">").join("&gt;");
       // strPageOutput += '<li role="listitem"><span style="' + style + '">' + text + '</span>&nbsp;' + el + "</li>\n";
       strPageOutput += "<li";
-      if (isCurrent) {
-        strPageOutput += ' class="outline"';
+      if (showInCurtainsMode || isCurrent) {
+        strPageOutput += ' class="';
+        if (showInCurtainsMode) {
+          strPageOutput += 'visible';
+        }
+        if (isCurrent) {
+          strPageOutput += 'outline';
+        }
+        strPageOutput += '"';
       }
       strPageOutput += ' role="listitem"><span style="' + style + '">';
       if (isGood) {
@@ -88,7 +95,7 @@ function WTFocus() {
     consoleStyle.textContent =
       "#WTFocusPanel.error {background:darkred;} #WTFocusPanel.warning {background:#CC3300;} #WTFocusPanel.curtainsMode.error {background:black;} #WTFocusPanel.curtainsMode {z-index:50000;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);} #WTFocusPanel.curtainsMode.warning {background:black;} #WTFocusPanel[hidden] {display:none;} #WTFocusPanel * {text-align:left} #WTFocusPanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: absolute;z-index:10000;background: black;padding: 20px 20px;width:" +
       WTFpanelWidth +
-      "px;font-size:16px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff;color:#333;padding:2px} #WTFocusPanel li.outline {outline:4px solid rgb(58, 190, 58);outline-offset:-4px;padding:8px} #WTFocusPanel.error:before {background:darkred} #WTFocusPanel.warning:before {background:#CC3300} #WTFocusPanel:before {content:'';display:block;height:20px;width:20px;transform:rotate(45deg);position:absolute;background:#000;left:-12px;top:3px;border:2px solid #fff;border-right:none;border-top:none;} #WTFocusPanel.toBottom:before {top:auto;bottom:3px} #WTFocusPanel.toLeft:before {left:auto;right:-12px;border:2px solid #fff;border-left:none;border-bottom:none;} #WTFocusPanel.curtainsMode {outline:10px solid orange;} #WTFocusPanel.curtainsMode:before {display:none;} #WTFocusPanel.curtainsMode li {display:none;} #WTFocusPanel.curtainsMode li:first-child {display:block;} #WTFocusPanel.curtainsMode li span {display:none!important;} ";
+      "px;font-size:16px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff;color:#333;padding:2px} #WTFocusPanel li.outline {outline:4px solid rgb(58, 190, 58);outline-offset:-4px;padding:8px} #WTFocusPanel.error:before {background:darkred} #WTFocusPanel.warning:before {background:#CC3300} #WTFocusPanel:before {content:'';display:block;height:20px;width:20px;transform:rotate(45deg);position:absolute;background:#000;left:-12px;top:3px;border:2px solid #fff;border-right:none;border-top:none;} #WTFocusPanel.toBottom:before {top:auto;bottom:3px} #WTFocusPanel.toLeft:before {left:auto;right:-12px;border:2px solid #fff;border-left:none;border-bottom:none;} #WTFocusPanel.curtainsMode {outline:10px solid orange;} #WTFocusPanel.curtainsMode:before {display:none;} #WTFocusPanel.curtainsMode li {display:none;} #WTFocusPanel.curtainsMode li.visible {display:block;} #WTFocusPanel.curtainsMode li span {display:none!important;} ";
     document.querySelector("head").appendChild(consoleStyle);
   }
   function promptForLoggingType() {
@@ -520,7 +527,7 @@ function WTFocus() {
           //reveal other dupes
           const allDupeAccNames = document.querySelectorAll("[data-accname='" + accName + "']");
           const dupeCount = allDupeAccNames.length;
-          log(accNameLabel, accName, style_bad_formatting);
+          log(accNameLabel, accName, style_bad_formatting,false,true);
           if (!dupeAccNameIsNoAccName) {
             Array.from(allDupeAccNames).forEach(function (anotherDupe) {
               anotherDupe.classList.add("dupeAccName");
@@ -538,13 +545,13 @@ function WTFocus() {
           WTFocusPanel.classList.remove("error");
           WTFocusPanel.classList.remove("warning");
         }
-        log(accNameLabel, accName, style_good_formatting);
+        log(accNameLabel, accName, style_good_formatting,false,true);
         log("Accessible Name Source: ", accNameSource, style_good_formatting);
       }
 
       isBad = false;
       log("HTML Element: ", tagDetails, style_good_formatting);
-      log("Role: ", elementRole, style_good_formatting);
+      log("Role: ", elementRole, style_unimportant_formatting,false,true);
       if (!outputToPage) {
         console.log("%cACCESSIBLE NAME COMES FROM: ", style_title_formatting);
       }

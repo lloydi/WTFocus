@@ -34,11 +34,6 @@ function WTFocus() {
 
   let curtainsMode = false;
 
-  // if (confirm("Do you want to set a black curtain over the whole page? (Only the element in focus has its accessible name revealed)")) {
-    // curtainsMode = true;
-    // accNameLabel = "";
-  // }
-
   function findAncestor(el, sel) {
     while ((el = el.parentElement) && !(el.matches || el.matchesSelector).call(el, sel));
     return el;
@@ -53,7 +48,6 @@ function WTFocus() {
   function log(text, el, style, isCurrent, showInCurtainsMode) {
     if (outputToPage) {
       el = el.split("<").join("&lt;").split(">").join("&gt;");
-      // strPageOutput += '<li role="listitem"><span style="' + style + '">' + text + '</span>&nbsp;' + el + "</li>\n";
       strPageOutput += "<li";
       if (showInCurtainsMode || isCurrent) {
         strPageOutput += ' class="';
@@ -73,9 +67,6 @@ function WTFocus() {
         strPageOutput += warning;
       }
       strPageOutput += text + "</span>&nbsp;" + el + "</li>\n";
-      // } else {
-      //   el = el.replace("&lt;", "<").replace("&gt;", ">");
-      //   console.log("%c" + text + '"' + el + '"', style);
     }
     //also output to console
     el = el.replace("&lt;", "<").replace("&gt;", ">");
@@ -188,8 +179,6 @@ function WTFocus() {
     const panelBottomCoord = scroll + rect.top + panelHeight;
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    // console.log("panelBottomCoord = " + panelBottomCoord);
-    // console.log("viewportHeight = " + viewportHeight);
     if (curtainsMode) {
       document.querySelector("#WTFocusPanel").removeAttribute("style");
     }
@@ -354,6 +343,8 @@ function WTFocus() {
       }
       let tagDetails = "<" + tagName + ">";
       let superfluousRole = false;
+      let hasDescribedBy = false;
+      let ariaDescribedByText = "";
       let identicalAriaLabel = false;
       let betterAsNativeHTMLelement = false;
       if (tagRole) {
@@ -365,13 +356,18 @@ function WTFocus() {
           betterAsNativeHTMLelement = true;
         }
       }
+      if (focusable.getAttribute("aria-describedby")) {
+        hasDescribedBy = true;
+      }
 
       let textContent = focusable.textContent;
       let ariaLabel = focusable.ariaLabel;
       let ariaLabelledBy = focusable.getAttribute("aria-labelledby");
       let placeholder = focusable.getAttribute("placeholder");
       let ariaLabelledBySource;
+      let ariaDescribedBySource;
       let accNameFromAriaLabelledBySrc = "";
+      let descriptionFromAriaDescribedBySrc = "";
       let value = focusable.getAttribute("value");
       let title = focusable.getAttribute("title");
       let accName = "";
@@ -503,10 +499,8 @@ function WTFocus() {
         accName = accNameFromAriaLabelledBySrc;
         accNameSource = "aria-labelledby";
       }
-      // if (!outputToPage) {
       console.log("%cACTIVE ELEMENT: ", style_title_formatting);
       console.log(focusable);
-      // }
 
       isDupeAccName = focusable.getAttribute("data-dupe") === "true";
       dupeAccNameIsNoAccName = isDupeAccName && accName === "";
@@ -550,6 +544,31 @@ function WTFocus() {
       }
 
       isBad = false;
+      
+      //New - AccDesc Start
+      //TODO - add title as accDesc source
+      if (hasDescribedBy) {
+        ariaDescribedBy = focusable.getAttribute("aria-describedby");
+        ariaDescribedBySource = ariaDescribedBy;
+        const ariaDescribedBySources = ariaDescribedBySource.split(" ");
+        if (ariaDescribedBySources.length > 1) {
+          Array.from(ariaDescribedBySources).forEach(function (sourceNode) {
+            if (document.querySelector("#" + sourceNode)) {
+              descriptionFromAriaDescribedBySrc += document.querySelector("#" + sourceNode).textContent + " ";
+            } else {
+              descriptionFromAriaDescribedBySrc += "❓❓❓ ";
+            }
+          });
+          descriptionFromAriaDescribedBySrc = descriptionFromAriaDescribedBySrc.trim();
+        } else {
+          descriptionFromAriaDescribedBySrc = document.querySelector("#" + ariaDescribedBySource).textContent;
+        }
+        log("Accessible Description: ", descriptionFromAriaDescribedBySrc, style_good_formatting);
+      } else {
+        log("Accessible Description: ", "N/A", style_good_formatting);
+      }
+      //New - AccDesc End
+
       log("HTML Element: ", tagDetails, style_good_formatting);
       log("Role: ", elementRole, style_unimportant_formatting,false,true);
       if (!outputToPage) {

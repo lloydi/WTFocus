@@ -47,6 +47,7 @@ function WTFocus() {
   }
   function log(text, el, style, isCurrent, showInCurtainsMode) {
     if (outputToPage) {
+      // console.clear();
       el = el.split("<").join("&lt;").split(">").join("&gt;");
       strPageOutput += "<li";
       if (showInCurtainsMode || isCurrent) {
@@ -70,7 +71,6 @@ function WTFocus() {
     }
     //also output to console
     el = el.replace("&lt;", "<").replace("&gt;", ">");
-    console.log("%c" + text + '"' + el + '"', style);
   }
   function addFocusStyles() {
     const focusStyles = document.createElement("style");
@@ -86,7 +86,7 @@ function WTFocus() {
     consoleStyle.textContent =
       "#WTFocusPanel.error {background:darkred;} #WTFocusPanel.warning {background:#CC3300;} #WTFocusPanel.curtainsMode.error {background:black;} #WTFocusPanel.curtainsMode {z-index:50000;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);} #WTFocusPanel.curtainsMode.warning {background:black;} #WTFocusPanel[hidden] {display:none;} #WTFocusPanel * {text-align:left} #WTFocusPanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: absolute;z-index:10000;background: black;padding: 20px 20px;width:" +
       WTFpanelWidth +
-      "px;font-size:16px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff;color:#333;padding:2px} #WTFocusPanel li.outline {outline:4px solid rgb(58, 190, 58);outline-offset:-4px;padding:8px} #WTFocusPanel.error:before {background:darkred} #WTFocusPanel.warning:before {background:#CC3300} #WTFocusPanel:before {content:'';display:block;height:20px;width:20px;transform:rotate(45deg);position:absolute;background:#000;left:-12px;top:3px;border:2px solid #fff;border-right:none;border-top:none;} #WTFocusPanel.toBottom:before {top:auto;bottom:3px} #WTFocusPanel.toLeft:before {left:auto;right:-12px;border:2px solid #fff;border-left:none;border-bottom:none;} #WTFocusPanel.curtainsMode {outline:10px solid orange;} #WTFocusPanel.curtainsMode:before {display:none;} #WTFocusPanel.curtainsMode li {display:none;} #WTFocusPanel.curtainsMode li.visible {display:block;} #WTFocusPanel.curtainsMode li span {display:none!important;} ";
+      "px;font-size:16px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff;color:#333;padding:2px} #WTFocusPanel li.outline {outline:4px solid rgb(58, 190, 58);outline-offset:-4px;padding:8px} #WTFocusPanel.error:before {background:darkred} #WTFocusPanel.warning:before {background:#CC3300} #WTFocusPanel:before {content:'';display:block;height:20px;width:20px;transform:rotate(45deg);position:absolute;background:#000;left:-12px;top:3px;border:2px solid #fff;border-right:none;border-top:none;} #WTFocusPanel.toBottom:before {top:auto;bottom:3px} #WTFocusPanel.toLeft:before {left:auto;right:-12px;border:2px solid #fff;border-left:none;border-bottom:none;} #WTFocusPanel.curtainsMode {outline:10px solid orange;} #WTFocusPanel.curtainsMode:before {display:none;} #WTFocusPanel.curtainsMode li {display:none;} #WTFocusPanel.curtainsMode li.visible {display:block;} #WTFocusPanel.curtainsMode li span {display:none!important;} #WTFocusPanel details summary {color:white}";
     document.querySelector("head").appendChild(consoleStyle);
   }
   function promptForLoggingType() {
@@ -125,7 +125,7 @@ function WTFocus() {
       removePanel();
     });
     const toggleModeButton = document.createElement("button");
-    toggleModeButton.textContent = "Change Mode (M)";
+    toggleModeButton.textContent = "Change Mode (C)";
     toggleModeButton.setAttribute("type", "button");
     toggleModeButton.setAttribute("class", "panel-btn");
     toggleModeButton.addEventListener("click", (e) => {
@@ -159,6 +159,9 @@ function WTFocus() {
     document.querySelector("#panelStyles").remove();
     document.querySelector("#focusStyles").remove();
   }
+  function toggleMoreDetails(){
+    document.querySelector("#WTFocusPanel summary").click();
+  }
   function keypressListeners() {
     window.addEventListener("keyup", (event) => {
       if (event.key === "Escape" && document.querySelector("#WTFocusPanel")) {
@@ -166,8 +169,11 @@ function WTFocus() {
       }
     });
     window.addEventListener("keyup", (event) => {
-      if (event.key.toLowerCase() === "m" && document.querySelector("#WTFocusPanel")) {
+      if (event.key.toLowerCase() === "c" && document.querySelector("#WTFocusPanel")) {
         toggleMode();
+      }
+      if (event.key.toLowerCase() === "m" && document.querySelector("#WTFocusPanel")) {
+        toggleMoreDetails();
       }
     });
   }
@@ -288,6 +294,9 @@ function WTFocus() {
         }
         if (focussedTagName=="input") {
           let type = focusable.getAttribute("type").toLowerCase();
+          if (type==="email") {
+            elementRole = "textbox";
+          }
           if (type==="text") {
             elementRole = "textbox";
           }
@@ -436,6 +445,7 @@ function WTFocus() {
         }
       }
 
+
       const hiddenElements = focusable.querySelectorAll("[aria-hidden='true'],[role='presentation']");
       let textContentWithAriaHiddenRemoved = textContent;
       if (hiddenElements.length > 0) {
@@ -499,8 +509,6 @@ function WTFocus() {
         accName = accNameFromAriaLabelledBySrc;
         accNameSource = "aria-labelledby";
       }
-      console.log("%cACTIVE ELEMENT: ", style_title_formatting);
-      console.log(focusable);
 
       isDupeAccName = focusable.getAttribute("data-dupe") === "true";
       dupeAccNameIsNoAccName = isDupeAccName && accName === "";
@@ -528,9 +536,7 @@ function WTFocus() {
             });
             log("Duplicate warning!", dupeCount + " elements on page have the same accessible name", style_bad_formatting);
           }
-          console.log("Elements on page that have identical accessible names:");
           Array.from(allDupeAccNames).forEach(function (anotherDupe) {
-            console.log(anotherDupe);
           });
           log("Accessible Name Source: ", accNameSource, style_bad_formatting);
         }
@@ -570,9 +576,14 @@ function WTFocus() {
       //New - AccDesc End
 
       log("HTML Element: ", tagDetails, style_good_formatting);
+
+      strPageOutput += "</ul>\n";
+      strPageOutput += "<details>\n";
+      strPageOutput += "<summary>More details (M)</summary>\n";
+      strPageOutput += "<ul role=\"list\">\n";
+
       log("Role: ", elementRole, style_unimportant_formatting,false,true);
       if (!outputToPage) {
-        console.log("%cACCESSIBLE NAME COMES FROM: ", style_title_formatting);
       }
       if (superfluousRole) {
         isBad = true;
@@ -683,7 +694,7 @@ function WTFocus() {
       }
 
       if (outputToPage) {
-        document.querySelector("#WTFocusPanel").innerHTML = '<ul role="list">' + strPageOutput + "</ul>";
+        document.querySelector("#WTFocusPanel").innerHTML = '<ul role="list">' + strPageOutput + "</ul></details>";
         document.querySelector("#WTFocusPanel").removeAttribute("hidden");
         addButtons();
       }
@@ -729,7 +740,6 @@ function WTFocus() {
     console.clear();
   }
   mimicFocus();
-    console.log("had focus = ",currentFocusedEl);
 
   function addAccNameIfNotAlreadyExists(thisAccName, el) {
     let dupeFound = false;

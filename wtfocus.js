@@ -33,6 +33,7 @@ function WTFocus() {
   let currentActiveEl;
 
   let curtainsMode = false;
+  let showDetails = false;
 
   function findAncestor(el, sel) {
     while ((el = el.parentElement) && !(el.matches || el.matchesSelector).call(el, sel));
@@ -47,7 +48,6 @@ function WTFocus() {
   }
   function log(text, el, style, isCurrent, showInCurtainsMode) {
     if (outputToPage) {
-      // console.clear();
       el = el.split("<").join("&lt;").split(">").join("&gt;");
       strPageOutput += "<li";
       if (showInCurtainsMode || isCurrent) {
@@ -86,7 +86,7 @@ function WTFocus() {
     consoleStyle.textContent =
       "#WTFocusPanel.error {background:darkred;} #WTFocusPanel.warning {background:#CC3300;} #WTFocusPanel.curtainsMode.error {background:black;} #WTFocusPanel.curtainsMode {z-index:50000;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);} #WTFocusPanel.curtainsMode.warning {background:black;} #WTFocusPanel[hidden] {display:none;} #WTFocusPanel * {text-align:left} #WTFocusPanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: absolute;z-index:10000;background: black;padding: 20px 20px;width:" +
       WTFpanelWidth +
-      "px;font-size:16px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff;color:#333;padding:2px} #WTFocusPanel li.outline {outline:4px solid rgb(58, 190, 58);outline-offset:-4px;padding:8px} #WTFocusPanel.error:before {background:darkred} #WTFocusPanel.warning:before {background:#CC3300} #WTFocusPanel:before {content:'';display:block;height:20px;width:20px;transform:rotate(45deg);position:absolute;background:#000;left:-12px;top:3px;border:2px solid #fff;border-right:none;border-top:none;} #WTFocusPanel.toBottom:before {top:auto;bottom:3px} #WTFocusPanel.toLeft:before {left:auto;right:-12px;border:2px solid #fff;border-left:none;border-bottom:none;} #WTFocusPanel.curtainsMode {outline:10px solid orange;} #WTFocusPanel.curtainsMode:before {display:none;} #WTFocusPanel.curtainsMode li {display:none;} #WTFocusPanel.curtainsMode li.visible {display:block;} #WTFocusPanel.curtainsMode li span {display:none!important;} #WTFocusPanel details summary {color:white}";
+      "px;font-size:16px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff;color:#333;padding:2px} #WTFocusPanel li.outline {outline:4px solid rgb(58, 190, 58);outline-offset:-4px;padding:8px} #WTFocusPanel.error:before {background:darkred} #WTFocusPanel.warning:before {background:#CC3300} #WTFocusPanel:before {content:'';display:block;height:20px;width:20px;transform:rotate(45deg);position:absolute;background:#000;left:-12px;top:3px;border:2px solid #fff;border-right:none;border-top:none;} #WTFocusPanel.toBottom:before {top:auto;bottom:3px} #WTFocusPanel.toLeft:before {left:auto;right:-12px;border:2px solid #fff;border-left:none;border-bottom:none;} #WTFocusPanel.curtainsMode {outline:10px solid orange;} #WTFocusPanel.curtainsMode:before {display:none;} #WTFocusPanel.curtainsMode li {display:none;} #WTFocusPanel.curtainsMode li.visible {display:block;} #WTFocusPanel.curtainsMode li span {display:none!important;} #WTFocusPanel details summary {color:white} #WTFocusPanel.curtainsMode details {display:none}";
     document.querySelector("head").appendChild(consoleStyle);
   }
   function promptForLoggingType() {
@@ -125,7 +125,7 @@ function WTFocus() {
       removePanel();
     });
     const toggleModeButton = document.createElement("button");
-    toggleModeButton.textContent = "Change Mode (C)";
+    toggleModeButton.textContent = "Change Mode (M)";
     toggleModeButton.setAttribute("type", "button");
     toggleModeButton.setAttribute("class", "panel-btn");
     toggleModeButton.addEventListener("click", (e) => {
@@ -160,7 +160,9 @@ function WTFocus() {
     document.querySelector("#focusStyles").remove();
   }
   function toggleMoreDetails(){
+    console.log("toggleMoreDetails");
     document.querySelector("#WTFocusPanel summary").click();
+    showDetails = !showDetails;
   }
   function keypressListeners() {
     window.addEventListener("keyup", (event) => {
@@ -169,10 +171,10 @@ function WTFocus() {
       }
     });
     window.addEventListener("keyup", (event) => {
-      if (event.key.toLowerCase() === "c" && document.querySelector("#WTFocusPanel")) {
+      if (event.key.toLowerCase() === "m" && document.querySelector("#WTFocusPanel")) {
         toggleMode();
       }
-      if (event.key.toLowerCase() === "m" && document.querySelector("#WTFocusPanel")) {
+      if (event.key.toLowerCase() === "d" && document.querySelector("#WTFocusPanel")) {
         toggleMoreDetails();
       }
     });
@@ -220,7 +222,6 @@ function WTFocus() {
     }
   }
 
-  console.clear();
   addFocusStyles();
   promptForLoggingType();
   addButtons();
@@ -237,9 +238,7 @@ function WTFocus() {
     focusable.addEventListener("focus", () => {
       let elementRole = focusable.getAttribute("role");
       let focussedTagName = focusable.tagName.toLowerCase();
-      console.clear();
       if (elementRole) {
-        // console.log("🛼🛼🛼 role attribute = ", elementRole, "🛼🛼🛼");
       } else {
         if ((focussedTagName=="article")||(focussedTagName=="button")||(focussedTagName=="dialog")||(focussedTagName=="figure")||(focussedTagName=="img")||(focussedTagName=="main")||(focussedTagName=="math")) {
           elementRole = focussedTagName;
@@ -551,11 +550,8 @@ function WTFocus() {
 
       isBad = false;
       
-      //New - AccDesc Start
-      //TODO - add title as accDesc source
       if (hasDescribedBy) {
-        ariaDescribedBy = focusable.getAttribute("aria-describedby");
-        ariaDescribedBySource = ariaDescribedBy;
+        ariaDescribedBySource = focusable.getAttribute("aria-describedby");
         const ariaDescribedBySources = ariaDescribedBySource.split(" ");
         if (ariaDescribedBySources.length > 1) {
           Array.from(ariaDescribedBySources).forEach(function (sourceNode) {
@@ -573,16 +569,18 @@ function WTFocus() {
       } else {
         log("Accessible Description: ", "N/A", style_good_formatting);
       }
-      //New - AccDesc End
 
       log("HTML Element: ", tagDetails, style_good_formatting);
-
+      log("Role: ", elementRole, style_good_formatting,false,true);
       strPageOutput += "</ul>\n";
-      strPageOutput += "<details>\n";
-      strPageOutput += "<summary>More details (M)</summary>\n";
+      strPageOutput += "<details";
+      if (showDetails) {
+        strPageOutput += " open";
+      }
+      strPageOutput += ">\n";
+      strPageOutput += "<summary>More details (D)</summary>\n";
       strPageOutput += "<ul role=\"list\">\n";
 
-      log("Role: ", elementRole, style_unimportant_formatting,false,true);
       if (!outputToPage) {
       }
       if (superfluousRole) {
@@ -737,7 +735,6 @@ function WTFocus() {
     } else {
       currentActiveEl.focus();
     }
-    console.clear();
   }
   mimicFocus();
 

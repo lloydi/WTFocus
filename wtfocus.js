@@ -4,6 +4,7 @@
 // add option to output to page or console (currently seet to both)?
 
 function WTFocus() {
+  let consoleOutput = "";
   let currentFocusedEl = document.activeElement;
   const focusables = document.querySelectorAll('a[href],button,select,input:not([type="hidden"]),textarea,summary,area,[tabindex]:not(#WTFocusPanel):not([tabindex^="-1"]),[contenteditable]:not([contenteditable="false"])');
   //styles
@@ -23,7 +24,6 @@ function WTFocus() {
   const warning = '<span aria-hidden="true">🚨</span> <span class="visually-hidden">Warning</span>';
   let accNameLabel = "Accessible name: ";
 
-  let outputToPage = false;
   let strPageOutput = "";
 
   let isGood = false;
@@ -47,29 +47,26 @@ function WTFocus() {
     isBad = false;
   }
   function log(text, el, style, isCurrent, showInCurtainsMode) {
-    if (outputToPage) {
-      el = el.split("<").join("&lt;").split(">").join("&gt;");
-      strPageOutput += "<li";
-      if (showInCurtainsMode || isCurrent) {
-        strPageOutput += ' class="';
-        if (showInCurtainsMode) {
-          strPageOutput += 'visible';
-        }
-        if (isCurrent) {
-          strPageOutput += 'outline';
-        }
-        strPageOutput += '"';
+    el = el.split("<").join("&lt;").split(">").join("&gt;");
+    strPageOutput += "<li";
+    if (showInCurtainsMode || isCurrent) {
+      strPageOutput += ' class="';
+      if (showInCurtainsMode) {
+        strPageOutput += 'visible';
       }
-      strPageOutput += ' role="listitem"><span style="' + style + '">';
-      if (isGood) {
-        strPageOutput += indicator;
+      if (isCurrent) {
+        strPageOutput += 'outline';
       }
-      if (isBad) {
-        strPageOutput += warning;
-      }
-      strPageOutput += text + "</span>&nbsp;" + el + "</li>\n";
+      strPageOutput += '"';
     }
-    //also output to console
+    strPageOutput += ' role="listitem"><span style="' + style + '">';
+    if (isGood) {
+      strPageOutput += indicator;
+    }
+    if (isBad) {
+      strPageOutput += warning;
+    }
+    strPageOutput += text + "</span>&nbsp;" + el + "</li>\n";
     el = el.replace("&lt;", "<").replace("&gt;", ">");
   }
   function addFocusStyles() {
@@ -90,11 +87,9 @@ function WTFocus() {
     document.querySelector("head").appendChild(consoleStyle);
   }
   function promptForLoggingType() {
-    // if (confirm("Do you want to show focus details on the page or in the console?\n\n👉OK = Show on page\n👉Cancel = Show in console")) {
     if (document.querySelector("#WTFocusCurtain")) {
       removePanel();
     }
-    outputToPage = true;
     strPageOutput = "";
     addPanelStyles(WTFpanelWidth);
     addCurtainToPage();
@@ -160,7 +155,6 @@ function WTFocus() {
     document.querySelector("#focusStyles").remove();
   }
   function toggleMoreDetails(){
-    console.log("toggleMoreDetails");
     document.querySelector("#WTFocusPanel summary").click();
     showDetails = !showDetails;
   }
@@ -312,7 +306,6 @@ function WTFocus() {
             elementRole = "button";
           }
         }
-        // console.log("🛼🛼🛼 role derived from TAGNAME/[type] = ", elementRole, "🛼🛼🛼");
       }
       currentFocusedEl = focusable;
       removeDupeIndicators();
@@ -385,9 +378,7 @@ function WTFocus() {
       let accNameSource = "";
       let ariaHiddenElementsPresent = false;
 
-      if (outputToPage) {
-        positionPanelOnPage(focusable);
-      }
+      positionPanelOnPage(focusable);
 
       textContent = textContent.trim();
 
@@ -515,16 +506,12 @@ function WTFocus() {
       if (accName === "" || isDupeAccName) {
         if (accName === "") {
           isBad = true;
-          if (outputToPage) {
-            WTFocusPanel.classList.add("error");
-          }
+          WTFocusPanel.classList.add("error");
           log(accNameLabel + "No accessible name!", "", style_bad_formatting);
           log("Accessible Name Source: N/A", "", style_bad_formatting);
         }
         if (isDupeAccName && accName !== "") {
-          if (outputToPage) {
-            WTFocusPanel.classList.add("warning");
-          }
+          WTFocusPanel.classList.add("warning");
           //reveal other dupes
           const allDupeAccNames = document.querySelectorAll("[data-accname='" + accName + "']");
           const dupeCount = allDupeAccNames.length;
@@ -540,10 +527,8 @@ function WTFocus() {
           log("Accessible Name Source: ", accNameSource, style_bad_formatting);
         }
       } else {
-        if (outputToPage) {
-          WTFocusPanel.classList.remove("error");
-          WTFocusPanel.classList.remove("warning");
-        }
+        WTFocusPanel.classList.remove("error");
+        WTFocusPanel.classList.remove("warning");
         log(accNameLabel, accName, style_good_formatting,false,true);
         log("Accessible Name Source: ", accNameSource, style_good_formatting);
       }
@@ -581,8 +566,6 @@ function WTFocus() {
       strPageOutput += "<summary>More details (D)</summary>\n";
       strPageOutput += "<ul role=\"list\">\n";
 
-      if (!outputToPage) {
-      }
       if (superfluousRole) {
         isBad = true;
         log("Superfluous `role` attribute", "", style_bad_formatting);
@@ -691,11 +674,9 @@ function WTFocus() {
         log("@aria-labelledby sources: ", "N/A", style_unimportant_formatting);
       }
 
-      if (outputToPage) {
-        document.querySelector("#WTFocusPanel").innerHTML = '<ul role="list">' + strPageOutput + "</ul></details>";
-        document.querySelector("#WTFocusPanel").removeAttribute("hidden");
-        addButtons();
-      }
+      document.querySelector("#WTFocusPanel").innerHTML = '<ul role="list">' + strPageOutput + "</ul></details>";
+      document.querySelector("#WTFocusPanel").removeAttribute("hidden");
+      addButtons();
       const allTempNodes = document.querySelectorAll("[data-temp-node]");
       Array.from(allTempNodes).forEach(function (tempNode) {
         tempNode.remove();

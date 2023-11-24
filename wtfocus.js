@@ -51,23 +51,6 @@ function WTFocus() {
   function addToConsoleOutput(text){
     consoleOutput+=text;
   }
-
-
-  function addEmptyDownloadLink() {
-    const a = document.createElement("a");
-    a.setAttribute("id", "downloadFocusableElsNamesAndRoles");
-    a.addEventListener("click", (e) => {
-
-      e.stopPropagation();
-    });
-    document.body.appendChild(a);
-  }
-
-
-
-
-
-
   function log(text, el, style, isCurrent, showInCurtainsMode) {
     el = el.split("<").join("&lt;").split(">").join("&gt;");
     strPageOutput += "<li";
@@ -150,7 +133,7 @@ function WTFocus() {
     });
     const downloadLink = document.createElement("a");
     const downloadWarningPreamble = "IMPORTANT DISCLAIMER!\n\nThis text file is a *very approximate representation* \nof what this page may be like for screen reader users:\n\n• It lists all the focusable elements (at the point \n  of running the script) but may not include every \n  element. For example, any element that is temporarily \n  set to be non-focusable with `tabindex=\"-1\"`, such as \n  an inactive tab in a group of tab controls, will not \n  be shown here.\n• It lists the accessible name and the role \n  (e.g. link, button)\n• Where there is an accessible description \n  (provided by `aria-describedby` or a `title` \n  attribute), this is included too";
-    downloadLink.textContent = "Download summary";
+    downloadLink.textContent = "Download summary (S)";
     downloadLink.setAttribute("href","data:text/plain;charset=utf-8," + encodeURIComponent(consoleOutput));
     downloadLink.setAttribute("download", "simple-screen-reader-emulation");
     downloadLink.addEventListener("click", (e) => {
@@ -160,6 +143,12 @@ function WTFocus() {
     WTFocusPanel.appendChild(toggleModeButton);
     WTFocusPanel.appendChild(downloadLink);
   }
+
+  function downloadSummary() {
+    document.querySelector("#WTFocusPanel a[download]").click();    
+  }
+
+
   function hidePanel() {
     document.querySelector("#WTFocusPanel").setAttribute("hidden", "hidden");
   }
@@ -201,6 +190,9 @@ function WTFocus() {
       }
       if (event.key.toLowerCase() === "d" && document.querySelector("#WTFocusPanel")) {
         toggleMoreDetails();
+      }
+      if (event.key.toLowerCase() === "s" && document.querySelector("#WTFocusPanel")) {
+        downloadSummary();
       }
     });
   }

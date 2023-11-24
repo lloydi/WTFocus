@@ -5,6 +5,7 @@
 
 function WTFocus() {
   let consoleOutput = "";
+  let textOutput = "";
   let currentFocusedEl = document.activeElement;
   const focusables = document.querySelectorAll('a[href],button,select,input:not([type="hidden"]),textarea,summary,area,[tabindex]:not(#WTFocusPanel):not([tabindex^="-1"]),[contenteditable]:not([contenteditable="false"])');
   //styles
@@ -45,6 +46,9 @@ function WTFocus() {
   function resetGoodBadState() {
     isGood = false;
     isBad = false;
+  }
+  function addToConsoleOutput(text){
+    consoleOutput+=text;
   }
   function log(text, el, style, isCurrent, showInCurtainsMode) {
     el = el.split("<").join("&lt;").split(">").join("&gt;");
@@ -508,6 +512,7 @@ function WTFocus() {
           isBad = true;
           WTFocusPanel.classList.add("error");
           log(accNameLabel + "No accessible name!", "", style_bad_formatting);
+          addToConsoleOutput("No accessible name!");
           log("Accessible Name Source: N/A", "", style_bad_formatting);
         }
         if (isDupeAccName && accName !== "") {
@@ -516,6 +521,7 @@ function WTFocus() {
           const allDupeAccNames = document.querySelectorAll("[data-accname='" + accName + "']");
           const dupeCount = allDupeAccNames.length;
           log(accNameLabel, accName, style_bad_formatting,false,true);
+          addToConsoleOutput(accName);
           if (!dupeAccNameIsNoAccName) {
             Array.from(allDupeAccNames).forEach(function (anotherDupe) {
               anotherDupe.classList.add("dupeAccName");
@@ -530,11 +536,14 @@ function WTFocus() {
         WTFocusPanel.classList.remove("error");
         WTFocusPanel.classList.remove("warning");
         log(accNameLabel, accName, style_good_formatting,false,true);
+        addToConsoleOutput(accName);
         log("Accessible Name Source: ", accNameSource, style_good_formatting);
       }
 
       isBad = false;
       
+      log("Role: ", elementRole, style_good_formatting,false,true);
+      addToConsoleOutput(", " + elementRole);
       if (hasDescribedBy) {
         ariaDescribedBySource = focusable.getAttribute("aria-describedby");
         const ariaDescribedBySources = ariaDescribedBySource.split(" ");
@@ -551,12 +560,13 @@ function WTFocus() {
           descriptionFromAriaDescribedBySrc = document.querySelector("#" + ariaDescribedBySource).textContent;
         }
         log("Accessible Description: ", descriptionFromAriaDescribedBySrc, style_good_formatting);
+        addToConsoleOutput(", " + descriptionFromAriaDescribedBySrc + "\n");
       } else {
         log("Accessible Description: ", "N/A", style_good_formatting);
+        addToConsoleOutput("\n");
       }
 
       log("HTML Element: ", tagDetails, style_good_formatting);
-      log("Role: ", elementRole, style_good_formatting,false,true);
       strPageOutput += "</ul>\n";
       strPageOutput += "<details";
       if (showDetails) {
@@ -705,6 +715,7 @@ function WTFocus() {
         focusable.blur();
       }
       focusable.focus();
+      console.log("-------------------");
     });
     checkedForDupes = true;
     if (currentActiveEl.tagName === "BODY") {
@@ -734,5 +745,6 @@ function WTFocus() {
       accNamesFound.push(thisAccName);
     }
   }
+  console.log(consoleOutput);
 }
 WTFocus();

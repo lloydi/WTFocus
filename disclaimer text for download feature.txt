@@ -1,0 +1,19 @@
+--------------------------------------------------------
+IMPORTANT DISCLAIMER!
+
+This text file is a *very approximate representation* 
+of what this page may be like for screen reader users:
+
+• It lists all the focusable elements (at the point 
+  of running the script) but may not include every 
+  element. For example, any element that is temporarily 
+  set to be non-focusable with `tabindex="-1"`, such as 
+  an inactive tab in a group of tab controls, will not 
+  be shown here.
+• It lists the accessible name and the role 
+  (e.g. link, button)
+• Where there is an accessible description 
+  (provided by `aria-describedby` or a `title` 
+  attribute), this is included too
+
+--------------------------------------------------------

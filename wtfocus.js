@@ -4,6 +4,7 @@
 // add option to output to page or console (currently seet to both)?
 
 function WTFocus() {
+  let elCount = 1;
   let consoleOutput = "";
   let textOutput = "";
   let currentFocusedEl = document.activeElement;
@@ -50,6 +51,23 @@ function WTFocus() {
   function addToConsoleOutput(text){
     consoleOutput+=text;
   }
+
+
+  function addEmptyDownloadLink() {
+    const a = document.createElement("a");
+    a.setAttribute("id", "downloadFocusableElsNamesAndRoles");
+    a.addEventListener("click", (e) => {
+
+      e.stopPropagation();
+    });
+    document.body.appendChild(a);
+  }
+
+
+
+
+
+
   function log(text, el, style, isCurrent, showInCurtainsMode) {
     el = el.split("<").join("&lt;").split(">").join("&gt;");
     strPageOutput += "<li";
@@ -87,7 +105,7 @@ function WTFocus() {
     consoleStyle.textContent =
       "#WTFocusPanel.error {background:darkred;} #WTFocusPanel.warning {background:#CC3300;} #WTFocusPanel.curtainsMode.error {background:black;} #WTFocusPanel.curtainsMode {z-index:50000;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);} #WTFocusPanel.curtainsMode.warning {background:black;} #WTFocusPanel[hidden] {display:none;} #WTFocusPanel * {text-align:left} #WTFocusPanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: absolute;z-index:10000;background: black;padding: 20px 20px;width:" +
       WTFpanelWidth +
-      "px;font-size:16px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff;color:#333;padding:2px} #WTFocusPanel li.outline {outline:4px solid rgb(58, 190, 58);outline-offset:-4px;padding:8px} #WTFocusPanel.error:before {background:darkred} #WTFocusPanel.warning:before {background:#CC3300} #WTFocusPanel:before {content:'';display:block;height:20px;width:20px;transform:rotate(45deg);position:absolute;background:#000;left:-12px;top:3px;border:2px solid #fff;border-right:none;border-top:none;} #WTFocusPanel.toBottom:before {top:auto;bottom:3px} #WTFocusPanel.toLeft:before {left:auto;right:-12px;border:2px solid #fff;border-left:none;border-bottom:none;} #WTFocusPanel.curtainsMode {outline:10px solid orange;} #WTFocusPanel.curtainsMode:before {display:none;} #WTFocusPanel.curtainsMode li {display:none;} #WTFocusPanel.curtainsMode li.visible {display:block;} #WTFocusPanel.curtainsMode li span {display:none!important;} #WTFocusPanel details summary {color:white} #WTFocusPanel.curtainsMode details {display:none}";
+      "px;font-size:16px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff;color:#333;padding:2px} #WTFocusPanel li.outline {outline:4px solid rgb(58, 190, 58);outline-offset:-4px;padding:8px} #WTFocusPanel.error:before {background:darkred} #WTFocusPanel.warning:before {background:#CC3300} #WTFocusPanel:before {content:'';display:block;height:20px;width:20px;transform:rotate(45deg);position:absolute;background:#000;left:-12px;top:3px;border:2px solid #fff;border-right:none;border-top:none;} #WTFocusPanel.toBottom:before {top:auto;bottom:3px} #WTFocusPanel.toLeft:before {left:auto;right:-12px;border:2px solid #fff;border-left:none;border-bottom:none;} #WTFocusPanel.curtainsMode {outline:10px solid orange;} #WTFocusPanel.curtainsMode:before {display:none;} #WTFocusPanel.curtainsMode li {display:none;} #WTFocusPanel.curtainsMode li.visible {display:block;} #WTFocusPanel.curtainsMode li span {display:none!important;} #WTFocusPanel details summary {color:white} #WTFocusPanel.curtainsMode details {display:none}#WTFocusPanel a[download]{display:block;margin:0.5em 0;color:#fff;text-decoration:underline;border:none;padding:0;}";
     document.querySelector("head").appendChild(consoleStyle);
   }
   function promptForLoggingType() {
@@ -130,8 +148,17 @@ function WTFocus() {
     toggleModeButton.addEventListener("click", (e) => {
       toggleMode();
     });
+    const downloadLink = document.createElement("a");
+    const downloadWarningPreamble = "IMPORTANT DISCLAIMER!\n\nThis text file is a *very approximate representation* \nof what this page may be like for screen reader users:\n\n• It lists all the focusable elements (at the point \n  of running the script) but may not include every \n  element. For example, any element that is temporarily \n  set to be non-focusable with `tabindex=\"-1\"`, such as \n  an inactive tab in a group of tab controls, will not \n  be shown here.\n• It lists the accessible name and the role \n  (e.g. link, button)\n• Where there is an accessible description \n  (provided by `aria-describedby` or a `title` \n  attribute), this is included too";
+    downloadLink.textContent = "Download summary";
+    downloadLink.setAttribute("href","data:text/plain;charset=utf-8," + encodeURIComponent(consoleOutput));
+    downloadLink.setAttribute("download", "simple-screen-reader-emulation");
+    downloadLink.addEventListener("click", (e) => {
+      alert(downloadWarningPreamble);
+    });
     WTFocusPanel.appendChild(consoleCloseButton);
     WTFocusPanel.appendChild(toggleModeButton);
+    WTFocusPanel.appendChild(downloadLink);
   }
   function hidePanel() {
     document.querySelector("#WTFocusPanel").setAttribute("hidden", "hidden");
@@ -521,7 +548,8 @@ function WTFocus() {
           const allDupeAccNames = document.querySelectorAll("[data-accname='" + accName + "']");
           const dupeCount = allDupeAccNames.length;
           log(accNameLabel, accName, style_bad_formatting,false,true);
-          addToConsoleOutput(accName);
+          addToConsoleOutput(elCount + " " + accName);
+          elCount++;
           if (!dupeAccNameIsNoAccName) {
             Array.from(allDupeAccNames).forEach(function (anotherDupe) {
               anotherDupe.classList.add("dupeAccName");
@@ -536,7 +564,8 @@ function WTFocus() {
         WTFocusPanel.classList.remove("error");
         WTFocusPanel.classList.remove("warning");
         log(accNameLabel, accName, style_good_formatting,false,true);
-        addToConsoleOutput(accName);
+        addToConsoleOutput(elCount + " " + accName);
+        elCount++;
         log("Accessible Name Source: ", accNameSource, style_good_formatting);
       }
 

@@ -1,7 +1,4 @@
 "use strict";
-// TODO
-// change to <dl>?
-// add option to output to page or console (currently seet to both)?
 
 function WTFocus() {
   let elCount = 1;

@@ -1,6 +1,7 @@
 "use strict";
 
 function WTFocus() {
+  const startFocusPoint = document.activeElement;
   let elCount = 1;
   let consoleOutput = "";
   let textOutput = "";
@@ -764,5 +765,6 @@ function WTFocus() {
     }
   }
   console.log(consoleOutput);
+  startFocusPoint.focus();
 }
 WTFocus();
